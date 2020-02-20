@@ -1,0 +1,118 @@
+<html>
+<head>
+	<title>Графики</title>
+	<meta charset="UTF-8">
+	<style>
+		<table, td, th {border: 1px solid lightgray; border-collapse: collapse;}>
+		table {padding: 0px;}
+		
+		canvas { border: 1px dashed black; }
+	</style>
+<head>	
+<body id="body">
+	<script type="text/javascript">
+		document.onkeydown = function(e) {/*
+			if(event.keyCode == 122) return false;
+			if(event.keyCode == 123) return false;
+			if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0))return false;
+			if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0))return false;
+			if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))return false;*/
+		}
+		document.onselectstart = () => false;
+	</script>
+	
+	<!--input type="text" id="textInput" onchange="logorifm10(this.value)"-->
+	<input type="file" onchange="readFile(this)">
+	<input type="button" onclick="setTrendList()" value = "Выбор тэгов" title="Изменение состава отображаемых тэгов. При нажатии кнопки &#171;ОК&#187; происходит сброс настроек на начальные">
+	<span style="border:1px gray solid"><input type="checkbox" onchange="deleteRangers()">Не показывать шкалы</span>
+	<span>&nbsp;</span>
+	<span style="border:1px gray solid"><input type="checkbox" onchange="deleteLabels()" >Не показывать метки</span>
+	<span>&nbsp;</span>
+	<input type="button" onclick="shiftLeft()" value = "&#9668">
+	<input type="text" id="dt" style="width:115px" onchange="checkTime(this.value)" title="Шаг времени для перемещения графиков вправо-влево.&nbsp;Шаг задаётся в часах, минутах, секундах и миллисекундах. Минут и секунд не может быть заданно более 59, миллисекунд - более 999. Часов можно установить сколько угодно. Пример правильного формата: 12h34m56s789ms. Допускается сокращённый формат, например: 30s или 20m или 2h30m">
+	<input type="button" onclick="shiftRight()" value = "&#9658">
+	<input type="button" style="font-weight:bold; font-size:12px; color:blue" onclick="stretch()" value = "&#10133;" title="Показать фрагмент между метками времени">
+	<input type="button" style="font-weight:bold; font-size:12px; color:blue" onclick="narrow()" value = "&#10134;" title="вернуться к предыдущему масштабу времени">
+	<!--span id="tmpOut" style="font-size:14px; font-family:courier new">Check out</span--> 
+	<canvas id="canvas1" style="position:absolute;left:0; top:40; border:3px black;"      width="1200" height="607"></canvas>
+	
+	<div    id="scrollLine1" style="position:absolute;left:0;   top:40; border:1px gray solid;  width:1; height:600;"></div>
+	<div    id="scrollLine2" style="position:absolute;left:1200;   top:40; border:1px gray solid;  width:1; height:600;"></div>
+	<div    id="outTime1" style="position:absolute;left:0;    top:640;border:1px gray solid; width:80;height:27; font-size:12px; background-color:white;z-index:2; font-weight:bold" align="center"></div><!--ondblclick="reSetStart(this)"-->
+	<div    id="outTime2" style="position:absolute;left:1120; top:640;border:1px gray solid; width:80;height:27; font-size:12px; background-color:white;z-index:2; font-weight:bold" align="center"></div><!--ondblclick="reSetEnd(this)"-->
+	<div id="scroll1" style="position:absolute;left:0;    top:640;border:2px black solid; width:10; height:11;font-size:12px; z-index:10; font-weight:bold; background-color:#DDDDDD;cursor: pointer;" align="center">1</div>
+	<div id="scroll2" style="position:absolute;left:1200; top:640;border:2px black solid; width:10; height:11;font-size:12px; z-index:10; font-weight:bold; background-color:#DDDDDD;cursor: pointer;" align="center">2</div>
+	<table  id="table1"      style="position:absolute;left:1200;top:0; border:1px gray solid; font-size:14"></table>
+	<div    id="output"      style="position:absolute;left:0;   top:670; cursor:pointer"></div>
+	
+	<!--textarea id="filecontents" cols="50" rows="15" style="position:absolute; left:0; top:690;">12h18m12s123ms</textarea-->
+	<div style="position:absolute; left:2; top:667; vertical-align: middle;background-color:gray; display: flex;">
+		<span  style="border:1px gray solid; vertical-align: middle;background-color:#EEEEEE" title="Показывать события от новых к старым">
+			<input id = "newInTop" type="checkbox" onchange="reDrawLog()">New&uarr;&nbsp;
+		</span>
+		&nbsp;
+		<span style="border:1px gray solid; vertical-align: middle; background-color:#DDDDDD;">
+			<span ondblclick="searchTime1()">&nbsp;От&nbsp;</span>
+			<input style="vertical-align: middle; width:160;" type="text" id="dt1" onchange="checkDT(this)">
+			<span ondblclick="searchTime2()">&nbsp;до&nbsp;</span>
+			<input style="vertical-align: middle; width:160;" type="text" id="dt2" onchange="checkDT(this)">
+			<input style="vertical-align: middle; font-weight:bold; color:blue" type="button" onclick="cutLog()" value = "&#10133;" title="Вырезать часть лога">
+			<input style="vertical-align: middle; font-weight:bold; color:blue" type="button" onclick="unCutLog()" value = "&#10134;" title="Показать весь лог">
+			&nbsp;
+		</span>
+		&nbsp;
+		<span  style="border:1px gray solid; vertical-align: middle;background-color:#EEEEEE;" 
+			title="При выборе этой опции, время &#171;От&#187 и &#171;до&#187 синхронизируется с метками времени окна трендов"
+		>
+			<input id = "synchroWithTags" type="checkbox" onchange="synchroWithTags(this)">
+			Синхр.&nbsp;
+		</span>
+		&nbsp;
+		<input type="button" onclick="setFiltr()" value = "Фильтры" title="Позволяет показывать в логе только выбранные пользователем типы сообщений">
+		&nbsp;
+		<input style="vertical-align: middle" type="button" onclick="searchSubStpFormConstr()" value = "Поиск" 
+			   title="Позволяет искать в логе события по фрагменту текста сообщения">
+		&nbsp;
+		<input style="vertical-align: bottom" type="file" onchange="readLogFile(this)">
+		<!--span id="myOut">myOut</span-->
+	</div>
+	<div    id="filecontents" style="position:absolute; left:0; top:690;height:250;border:1px gray solid;overflow-y:auto"></div><!--; width:1080-->
+	<div id="verScrollBox" style="position:absolute; left:1080; top:690;">
+		<div><input type="button" onclick="shiftLnDn()" value = "&#9650" style="width:18px; padding:0;"></div>
+		<div id="vertScrollLine" onclick="shiftPg()" style="height:212px; width:18px; background-color:lightgray;"></div>
+		<div><input type="button" onclick="shiftLnUp()" value = "&#9660" style="width:18px; padding:0"></div>
+	</div>
+	<div><input type="button" id="logScroll" onclick="vertScroll(this)" value = "" style="position:absolute; left:1080; top:710; width:18px; padding:0"></div>
+
+	
+	<script type="text/javascript" src="Tools.js"       ></script>
+	<script type="text/javascript" src="arrConstr.js"   ></script>
+	<script type="text/javascript" src="trendObj.js"    ></script>
+	<script type="text/javascript" src="likeToMoveIt.js"></script>
+	<script type="text/javascript" src="logFileProc.js" ></script>
+	<script type="text/javascript" src="javaCommunication.js" ></script>
+	<script>
+		let out = document.getElementById('output');
+		
+		function readFile(input) {
+			out.innerHTML = "";
+			let file = input.files[0];
+			let reader = new FileReader();
+			reader.readAsText(file);
+			reader.onload = function() {
+				arrayConstructor(reader.result);
+				//reader = null;
+			};
+			reader.onerror = function() {
+				out.innerHTML = reader.error;
+			};
+		}
+		async function deleteRangers() {
+			showRangers = !showRangers;
+			setCanvasOffset();
+			drawAll();
+		}
+		async function deleteLabels()  {showLabels  = !showLabels; drawAll();}
+	</script>
+</body>
+</html>

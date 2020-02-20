@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<company>
+    <name>IT-Heaven</name>
+    <offices>
+        <office floor="1" room="1">
+            <employees>
+                <employee job="Middle Software Developer" name="Maksim"/>
+                <employee job="Junior Software Developer" name="Ivan"/>
+                <employee job="Junior Software Developer" name="Franklin"/>
+            </employees>
+        <GraphicTest Name="TGraphicTest1" UUID="000000000"/>
+<GraphicTest1 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000">
+<Test0/>
+<Test1/>
+<Test2/>
+</GraphicTest2>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000">
+<Test0/>
+<Test1/>
+<Test2/>
+</GraphicTest2>
+</office>
+        <office floor="1" room="2">
+            <employees>
+                <employee job="Middle Software Developer" name="Herald"/>
+                <employee job="Middle Software Developer" name="Adam"/>
+                <employee job="Junior Software Developer" name="Leroy"/>
+            </employees>
+        <GraphicTest Name="TGraphicTest1" UUID="000000000"/>
+<GraphicTest1 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000"/>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000">
+<Test0/>
+<Test1/>
+<Test2/>
+</GraphicTest2>
+<GraphicTest2 Name="TGraphicTest2" UUID="000000000">
+<Test0/>
+<Test1/>
+<Test2/>
+</GraphicTest2>
+</office>
+    </offices>
+</company>

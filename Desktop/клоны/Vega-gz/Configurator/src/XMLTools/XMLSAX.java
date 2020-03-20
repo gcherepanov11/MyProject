@@ -44,6 +44,7 @@ import XMLTools.UUID;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class XMLSAX {
 
@@ -96,19 +97,9 @@ public class XMLSAX {
             Field.setAttribute("UUID", arg.get(i)[1]);
             Field.setAttribute("Comment", arg.get(i)[2]);
             Fields.appendChild(Field);
-            // struct.addData(arg.get(i)[0], "BOOL", arg.get(i)[1], arg.get(i)[2]);
+
         }
-        /*
-         while (iter_arg.hasNext()) {
-         String[] field = iter_arg.next();
-         Element Field = doc.createElement("Field");
-         Field.setAttribute("Name", field[0]);
-         Field.setAttribute("Type", UUIDType);//задали тип данных рукописно.Кстати не знаю верно это или нет Но вроде пишет что то
-         Field.setAttribute("UUID", field[1]);
-         Field.setAttribute("Comment", field[2]);
-         Fields.appendChild(Field);
-         struct.addData(field[0], "BOOL", field[1], field[2]);
-         }*/
+
         try {
             writeDocument(doc, patchF);
         } catch (TransformerFactoryConfigurationError ex) {
@@ -172,13 +163,13 @@ public class XMLSAX {
 
     // Добавляем сигналы в Мнемосхемы  в ручную сделано, надо автоматом
     public void addSignalesMnemo(ArrayList<String[]> lisSig, String nameListSign, String filepatch, String UUIDHigth, String GName,
-            String UUIDSourse, String UUIDBlock, String TypeName, String UUIDSourceName, String UUIDBlockName) throws SAXException, IOException, XPathExpressionException, TransformerFactoryConfigurationError,
+            String UUIDSourse, String UUIDBlock, String TypeName, String UUIDSourceName, String UUIDBlockName, String ElemName) throws SAXException, IOException, XPathExpressionException, TransformerFactoryConfigurationError,
             TransformerException, ParserConfigurationException, XPathFactoryConfigurationException, InterruptedException {
         String myVarU_0 = UUID.getUUID();
         String myVarU_0_0 = UUID.getUUID(); // УИД переменной для связки с переменно входа объекта
         String myVarU_1 = UUID.getUUID();
-        String uuIdTBaSence = UUIDHigth; // перебрать файлы в его поиска  // Это уид TBaseAnIn
 
+        //  String uuIdTBaSence = UUIDHigth; // перебрать файлы в его поиска  // Это уид TBaseAnIn
         Iterator<String[]> iter_arg = lisSig.iterator();
         //  globalpatchF="C:\\Users\\cherepanov\\Desktop\\ArchNew\\Design";
         String patchF = filepatch + "\\" + "AT_HMI.iec_hmi"; // сюда будем вносиь структуру
@@ -198,61 +189,51 @@ public class XMLSAX {
         // а вот тут надо посчитать сколько переменных
         XPathExpression expr = xpath.compile("SubAppType/FBLibrary");
         NodeList nodes = (NodeList) expr.evaluate(document_final, XPathConstants.NODESET);
-        int Number = 0;
+        int Number = 0, Num = 0, Counter = 1;
+
         //  так как нода у нас одна то пишем только в 1 по этому for так работает либо пишем в первую.
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);
-
-            //System.out.println(n.getNodeName());
-            Document GraphicsCompositeType = createTGraphicsCompositeType(GName, UUIDHigth, lisSig); // так забрали документ из метода
+            
+            Document GraphicsCompositeType = createTGraphicsCompositeType(GName); // так забрали документ из метода
             Element FBNetwork = (Element) GraphicsCompositeType.getElementsByTagName("FBNetwork").item(0); // вытягиваем ноду элемента FBNetwork из Документа который получили выше
 
             Node rootGP = GraphicsCompositeType.getFirstChild(); // Начальная нода файла (что будем импортировать)
 
-            //Element DataConnections = GraphicsCompositeType.createElement("DataConnections"); // это для связи переменных с входными сигналами(чуть позже реализовать)
             // настройка сигналов помещаемых в Графический компонент
             int Ycord = -710; // Переменная смещения по Y в виде компонентов
-            int NumberSign = 0;
-            int xPos = 2;
-            int yPos = 0;
-            int sumColumn = 1; // Количество столбцов
-            int offset = 750; // Переменная на смещение по иксам в нарисованном элементе
+            int NumberSign = -1;
 
-            // Element DataConnections = GraphicsCompositeType.createElement("DataConnections"); // это для связи переменных с входными сигналами(чуть позже реализовать)
-            //iter_arg = lisSig.iterator();
-            //int Number = 0;
+            int xPos = 2;
+            int yPos = 1;
+            int sumColumn = 1; // Количество столбцов
+            int offset = 850;
+            String visibleAI = "", disableVisible = "";// Переменная на смещение по иксам в нарисованном элементе
+
             Element DataConnections = GraphicsCompositeType.createElement("DataConnections"); // это для связи переменных с входными сигналами(чуть позже реализовать)
 
-            for (int j = 0; j < lisSig.size(); j++) {//это цикл создания одного блока 
+            while (iter_arg.hasNext()) {//это цикл создания одного блока 
                 String XYposition = "(x:=" + Integer.toString(xPos) + ",y:=" + Integer.toString(yPos) + ")"; //"(x:=0,y:=0)" это позиция графики первой вкладки
                 String uuidFB = getUIID();
                 String[] field = iter_arg.next();
                 Element FB = GraphicsCompositeType.createElement("FB"); // Создаем FB в вытянутом элементе из фукции создания графического компонента
-                String nameBAnpartClone = "BaseAnPar_Test_" + Integer.toString(NumberSign); // так связь делается переменных ее основа
+                String nameBAnpartClone = ElemName + "_" + (Num++); // так связь делается переменных ее основа
                 FB.setAttribute("Name", nameBAnpartClone);
                 FB.setAttribute("Type", TypeName);//исправить почему ANOut
                 FB.setAttribute("UUID", uuidFB);
-                FB.setAttribute("TypeUUID", uuIdTBaSence); // уид TBaSence
+                FB.setAttribute("TypeUUID", UUIDHigth); // уид TBaSence
                 FB.setAttribute("X", "-704.75");
                 FB.setAttribute("Y", Integer.toString(Ycord)); // Меняем только Y
-                Ycord = Ycord + 400;
+                Ycord = Ycord + 450;
+
                 Element VarValue0 = GraphicsCompositeType.createElement("VarValue");
                 VarValue0.setAttribute("Variable", "PrefStr");
-                String VPrefStr = "'" + nameListSign + "." + "'"; // Только таким видом добился
+                String VPrefStr = "'" + nameListSign + "'"; // Только таким видом добился
                 System.out.println(VPrefStr);
                 VarValue0.setAttribute("Value", VPrefStr);
                 VarValue0.setAttribute("Type", "STRING");
                 VarValue0.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
                 FB.appendChild(VarValue0);
-
-                Element VarValue3 = GraphicsCompositeType.createElement("VarValue");
-                VarValue3.setAttribute("Variable", "Name");
-                String NameComm = "\u0027" + field[2] + "\u0027";
-
-                VarValue3.setAttribute("Value", NameComm);
-                VarValue3.setAttribute("Type", "String");
-                VarValue3.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");//этот уид в типе TBaseSen
-                FB.appendChild(VarValue3);
 
                 Element VarValue1 = GraphicsCompositeType.createElement("VarValue");
                 VarValue1.setAttribute("Variable", "pos");
@@ -265,32 +246,65 @@ public class XMLSAX {
                 VarValue2.setAttribute("Variable", "NameAlg");
                 String VNameAlg = "\u0027" + field[0] + "\u0027";// Только так работает как добиться методом кода не понятно
                 VarValue2.setAttribute("Value", VNameAlg); // Название сигнала
-                VarValue2.setAttribute("Type", "TPos");
-                VarValue2.setAttribute("TypeUUID", "17C82815436383728D79DA8F2EF7CAF2");
+                VarValue2.setAttribute("Type", "STRING");
+                VarValue2.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
                 FB.appendChild(VarValue2);
                 FBNetwork.appendChild(FB);
 
-                {
-                    // String nameConnection = "BaseAnPar_Test_" + Integer.toString(NumberSign);
+                Element VarValue3 = GraphicsCompositeType.createElement("VarValue");
+                VarValue3.setAttribute("Variable", "Name");
+                String NameComm = "\u0027" + field[2] + "\u0027";
+                VarValue3.setAttribute("Value", NameComm);
+                VarValue3.setAttribute("Type", "String");
+                VarValue3.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");//этот уид в типе TBaseSen
+                FB.appendChild(VarValue3);
+                
+                int result = field[0].indexOf("Res");
+                if (result >= 0) {
+                    visibleAI = "FALSE";
+                    disableVisible = "TRUE";
+                } else {
+                    visibleAI = "TRUE";
+                    disableVisible = "FALSE";
+                }
+                Element VarValue4 = GraphicsCompositeType.createElement("VarValue");
+                VarValue4.setAttribute("Variable", "visiblePar");
+                VarValue4.setAttribute("Value", visibleAI);
+                VarValue4.setAttribute("Type", "BOOL");
+                VarValue4.setAttribute("TypeUUID", "EC797BDD4541F500AD80A78F1F991834");
+                FB.appendChild(VarValue4);
+
+                Element VarValue5 = GraphicsCompositeType.createElement("VarValue");
+                VarValue5.setAttribute("Variable", "disableAlarm");
+                VarValue5.setAttribute("Value", disableVisible);
+                VarValue5.setAttribute("Type", "BOOL");
+                VarValue5.setAttribute("TypeUUID", "EC797BDD4541F500AD80A78F1F991834");
+                FB.appendChild(VarValue5);
+
+                Element VarValue6 = GraphicsCompositeType.createElement("VarValue");
+                VarValue6.setAttribute("Variable", "TagID");
+                VarValue6.setAttribute("Value", "\u0027" + field[0] + field[2] + "\u0027");
+                VarValue6.setAttribute("Type", "STRING");
+                VarValue6.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
+                FB.appendChild(VarValue6);
+                {                    
                     Element Connection = GraphicsCompositeType.createElement("Connection");
                     Connection.setAttribute("Source", "PrefAb");
                     Connection.setAttribute("Destination", "BaseAnPar_Test_" + (Number++) + ".PrefAb");
-                    Connection.setAttribute("SourceUUID", UUIDSourse);
+                    Connection.setAttribute("SourseUUID", UUIDSourse);
                     Connection.setAttribute("DestinationUUID", uuidFB + "." + UUIDBlock);
                     DataConnections.appendChild(Connection);
                     FBNetwork.appendChild(DataConnections);
                 }
                 {
-                    // String nameConnection = "BaseAnPar_Test_" + Integer.toString(NumberSign);//это блок nameRU
                     Element Connection = GraphicsCompositeType.createElement("Connection");
                     Connection.setAttribute("Source", "NameRU");
                     Connection.setAttribute("Destination", "BaseAnPar_Test_" + (Number++) + ".NameRU");
-                    Connection.setAttribute("SourceUUID", UUIDSourceName);
+                    Connection.setAttribute("SourseUUID", UUIDSourceName);
                     Connection.setAttribute("DestinationUUID", uuidFB + "." + UUIDBlockName);
                     DataConnections.appendChild(Connection);
                     FBNetwork.appendChild(DataConnections);
                 }
-
                 if (sumColumn > 0) {
                     xPos = xPos + offset; // так меняем смещение графики по иксам
                 } else {
@@ -298,13 +312,27 @@ public class XMLSAX {
                     sumColumn = 2;
                     yPos = yPos + 26;
                 }
+                if (NumberSign >= 64) {
+                    Num = 0;
+                    NumberSign = -1;
+                    FBNetwork.appendChild(DataConnections);
+                    Node importNode = document_final.importNode(rootGP, true); // Вытягиваем элемент и импортируем Импорт обязателен
+                    n.appendChild(importNode); // Добавляем коренную ноду в Мнемосхему уже после всех преобразований
+
+                    Ycord = -710; // Переменная смещения по Y в виде компонентов
+                    xPos = 2;
+                    yPos = 0;
+                    offset = 750; // Переменная на смещение по иксам в нарисованном элементе
+
+                    GraphicsCompositeType = createTGraphicsCompositeType(GName + (Counter++)); // так забрали документ из метода
+                    FBNetwork = (Element) GraphicsCompositeType.getElementsByTagName("FBNetwork").item(0); // вытягиваем ноду элемента FBNetwork из Документа который получили выше
+                    rootGP = GraphicsCompositeType.getFirstChild(); // Начальная нода файла (что будем импортировать)
+                    DataConnections = GraphicsCompositeType.createElement("DataConnections"); // это для связи переменных с входными сигналами(чуть позже реализовать)
+
+                }
+
                 ++NumberSign;
                 --sumColumn;
-                if (j > 64) {
-                    j = 0;
-                    Node importNode = document_final.importNode(rootGP, true); // Вытягиваем элемент и импортируем Импорт обязателен
-                    n.appendChild(importNode);
-                }
 
             }
 
@@ -330,7 +358,8 @@ public class XMLSAX {
     }
 
     // --- Метод создания элементов TGraphicsCompositeType ---
-    Document createTGraphicsCompositeType(String GraphName, String UUIDh, ArrayList<String[]> list) throws ParserConfigurationException {
+    Document createTGraphicsCompositeType(String GraphName) throws ParserConfigurationException {
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         Document doc = factory.newDocumentBuilder().newDocument();
@@ -488,14 +517,7 @@ public class XMLSAX {
     // --- Запипись в файл структурой XML ---
     void writeDocument(Document document, String patchWF) throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {
         try {
-            //тут в одну строку работает тоже
-            /*
-             Transformer tr = TransformerFactory.newInstance().newTransformer();
-             DOMSource source = new DOMSource(document);
-             FileOutputStream fos = new FileOutputStream("src\\WorkXML\\test.xml");
-             StreamResult result = new StreamResult(fos);
-             tr.transform(source, result);
-             */
+
             File file = new File(patchWF);
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");

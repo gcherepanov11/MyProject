@@ -36,13 +36,12 @@ public class FrameTabel extends javax.swing.JPanel {
     String filepatch;
     String nameTable = "";
     String UUIDHigth = "";
-    String Graphname, TypeName;
-    String UUIDBlockPref,UUIDBlockName;
+    String Graphname, TypeName, ElemName;
+    String UUIDBlockPref, UUIDBlockName;
     String TypeAI_DRV = "REAL", TypeDI_DRV = "BOOL";
     String nameSignal1, nameSignal2, nameSignal3, nameSignal4, nameSignal5, nameSignal6,
             UUID_Type1, UUID_Type2, UUID_Type3, UUID_Type4,
-            UUID_Parent1, UUID_Parent2, UUID_Parent3, UUID_Parent4
-            ;
+            UUID_Parent1, UUID_Parent2, UUID_Parent3, UUID_Parent4;
 
     private final String UUIDType_AI_ToProcessing = "187F76AE49C59E950138DDA3067101D0";//уиды типов
     private final String UUIDType_AI_Settings = "668FE9B94A603427C8EDBBB8917A7594";
@@ -197,57 +196,46 @@ public class FrameTabel extends javax.swing.JPanel {
         DataBase workbase = DataBase.getInstance();
         //workbase.connectionToBase();
         ArrayList<String[]> dataFromDbGPA = workbase.getSelectData(nameTable);//пока передаю через AI но необходимо это исправить,чтобы принимал все параметры
-        ArrayList<String[]> dataToXML = new ArrayList<>();
         int number = 0;
         UUID uuid = new UUID();
 
-//        String[] tmp = new String[44];
-//        for(String[] sa : dataFromDbGPA){// созданная львом штука которую надо сдлеать
-//            tmp[0] = "Name"; tmp[1]="BaseAnPar_Test_"+(number++);
-//            tmp[2] = "Type"; tmp[3]="BaseAnPar_Test_"+(number++);
-//            tmp[4]="UUID";  tmp[5]=uuid.getUIID();
-//            tmp[2] = "Type"; tmp[3]="BaseAnPar_Test_"+(number++);
-//            tmp[2] = "Type"; tmp[3]="BaseAnPar_Test_"+(number++);
-//            tmp[2] = "Type"; tmp[3]="BaseAnPar_Test_"+(number++);
-//            tmp[2] = "Type"; tmp[3]="BaseAnPar_Test_"+(number++);
-//            tmp[2] = "Type"; tmp[3]="BaseAnPar_Test_"+(number++);
-//            tmp[2] = "Value"; tmp[3] = sa[0];
-//            tmp[2] = "Variable"; tmp[3]="NameAlg";
-//            dataToXML.add(tmp);
-//        }
-        if (nameTable.equals("dies_ai")) {
+        if (nameTable.equals("ai")) {
             UUIDHigth = "C06031C04C13BB17463EB1B889813E68";//уид верхенего уровня
             Graphname = "TGraphicsCompositeTypeAI";
             TypeName = "T_BaseAnIn";
             UUIDBlockPref = "7DF53A3B47B1075B9D3AE78253FC271B";
-            UUIDBlockName="31E704A94C1D0BCA16C48C8F563CAB4B";
+            UUIDBlockName = "31E704A94C1D0BCA16C48C8F563CAB4B";
+            ElemName = "T_BaseAnIn";
 
-        } else if (nameTable.equals("dies_ao")) {
+        } else if (nameTable.equals("ao")) {
             UUIDHigth = "CDB0D9974B89FB4417F2139064F22857";
             Graphname = "TGraphicsCompositeTypeAO";
             TypeName = "T_BaseAnOut";
             UUIDBlockPref = "7DF53A3B47B1075B9D3AE78253FC271B";
-            UUIDBlockName="31E704A94C1D0BCA16C48C8F563CAB4B";
+            UUIDBlockName = "31E704A94C1D0BCA16C48C8F563CAB4B";
+            ElemName = "T_BaseAnOut";
 
-        } else if (nameTable.equals("dies_do")) {
+        } else if (nameTable.equals("dgo")) {
             UUIDHigth = "DD87E9C742BB69689219F08BAD99F4B8";
             Graphname = "TGraphicsCompositeTypeDO";
             TypeName = "T_BaseDO";
             UUIDBlockPref = "FB48BEA74A28EB85591DC0B68AA08A74";//поменять местами DO и DI
-            UUIDBlockName="524F2EBB4524C97C16682CAD9668D4CC";
+            UUIDBlockName = "524F2EBB4524C97C16682CAD9668D4CC";
+            ElemName = "T_Base_DO";
 
-        } else if (nameTable.equals("dies_di")) {
+        } else if (nameTable.equals("di")) {
             UUIDHigth = "5298F3F94A79E35B818384B694BB561B";
             Graphname = "TGraphicsCompositeTypeDI";
             TypeName = "T_BaseDI";
             UUIDBlockPref = "FB48BEA74A28EB85591DC0B68AA08A74";
-            UUIDBlockName="524F2EBB4524C97C16682CAD9668D4CC";
+            UUIDBlockName = "524F2EBB4524C97C16682CAD9668D4CC";
+            ElemName = "T_Base_DI";
         }
 
         try {
             try {
                 // Тут передаем данные тестовый вызов
-                createXMLSax.addSignalesMnemo(dataFromDbGPA, "GPA", filepatch, UUIDHigth, Graphname, UUIDSourcePref, UUIDBlockPref, TypeName,UUIDSourceNameRU,UUIDBlockName);
+                createXMLSax.addSignalesMnemo(dataFromDbGPA, "GPA", filepatch, UUIDHigth, Graphname, UUIDSourcePref, UUIDBlockPref, TypeName, UUIDSourceNameRU, UUIDBlockName, ElemName);
             } catch (IOException ex) {
                 Logger.getLogger(FrameTabel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (XPathExpressionException ex) {
@@ -285,7 +273,7 @@ public class FrameTabel extends javax.swing.JPanel {
                 }
 
                 switch (nameTable) {
-                    case "dies_ai":
+                    case "ai":
 
                         nameSignal1 = "T_GPA_AI_FromProcessing";
                         nameSignal2 = "T_GPA_AI_ToProcessing";
@@ -313,7 +301,7 @@ public class FrameTabel extends javax.swing.JPanel {
                         createXMLSax.runBasecreateTypeAll(nameTable, nameSignal6, filepatch, TypeDI_DRV);
 
                         break;
-                    case "dies_ao":
+                    case "ao":
 
                         nameSignal1 = "T_GPA_AO_FromHMI";
                         nameSignal2 = "T_GPA_AO_ToHMI";
@@ -328,7 +316,7 @@ public class FrameTabel extends javax.swing.JPanel {
                         createXMLSax.runBasecreateTypeAll(filepatch, nameTable, nameSignal2, UUID_Type2, UUID_Parent2);
 
                         break;
-                    case "dies_do":
+                    case "dgo":
 
                         nameSignal1 = "T_GPA_DO_FromHMI";
                         nameSignal2 = "T_GPA_DO_ToHMI";
@@ -343,7 +331,7 @@ public class FrameTabel extends javax.swing.JPanel {
                         createXMLSax.runBasecreateTypeAll(filepatch, nameTable, nameSignal2, UUID_Type2, UUID_Parent2);
 
                         break;
-                    case "dies_di":
+                    case "di":
 
                         nameSignal1 = "T_GPA_DI_FromProcessing";
                         nameSignal2 = "T_GPA_DI_Settings";

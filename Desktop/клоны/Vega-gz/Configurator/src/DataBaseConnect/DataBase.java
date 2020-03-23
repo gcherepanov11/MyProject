@@ -431,55 +431,129 @@ public class DataBase {
     public ArrayList<String[]> getSelectData(String table) {//в перспективе задавать в параметрах листи через if else указывать,ибо разный набор столбцов мы вытягиваем для ai ao di do
 
         ArrayList<String[]> selectData = new ArrayList<>();
-        try {
-            stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(" SELECT * FROM " + table + ";");
-            while (rs.next()) {
-                String TypeADC = rs.getString("TAG_NAME_PLC");
-                String id = uuid.getUIID();//генерит рандомный уид который никому не интересен
-                String namesig = rs.getString("Наименование сигнала");
-                String RangeMin = rs.getString("Диапазон мин.");
-                String RangeMax = rs.getString("Диапазон макс.");//field[4]
-                String Unit = rs.getString("Ед.изм.");
-                String sigType = rs.getString("Тип сигнала");
-                String Adres_1 = rs.getString("Адрес_1");
-                String Adres_2 = rs.getString("Адрес_2");
-                String Device = rs.getString("Устройство");//field[9]
-                String Slot = rs.getString("Слот");
-                String Channel = rs.getString("Канал");
-                String An = rs.getString("УСТ_НИЖН_АВАР");
-                String Pn = rs.getString("УСТ_НИЖН_ПРЕД");
-                String Pv = rs.getString("УСТ_ВЕРХ_ПРЕД");
-                String Av = rs.getString("УСТ_ВЕРХ_АВАР");
+        String TableNumber;
 
-                String[] str = {TypeADC,
-                    id,
-                    namesig,
-                    RangeMax,
-                    RangeMin,
-                    Unit,
-                    sigType,
-                    Adres_1,
-                    Adres_2,
-                    Device,
-                    Slot,
-                    Channel,
-                    An,
-                    Pn,
-                    Pv,
-                    Av};
-                selectData.add(str);
-            }
-            rs.close();
-            stmt.close();
-            System.out.println("--Operation SELECT done sucessfully");
-        } catch (SQLException ex) {
-            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+        switch (table) {
+            case "ai":
+                try {
+                    stmt = connection.createStatement();
+                    ResultSet rs = stmt.executeQuery(" SELECT * FROM " + table + ";");
+                    while (rs.next()) {
+                        String TypeADC = rs.getString("TAG_NAME_PLC");
+                        String id = uuid.getUIID();//генерит рандомный уид который никому не интересен
+                        String namesig = rs.getString("Наименование сигнала");
+                        String RangeMin = rs.getString("Диапазон мин.");
+                        String RangeMax = rs.getString("Диапазон макс.");//field[4]
+                        String Unit = rs.getString("Единица измерения");
+                        String sigType = rs.getString("Тип сигнала");
+                        String Adres_1 = rs.getString("Адрес_1");
+                        String Adres_2 = rs.getString("Адрес_2");
+                        String Device = rs.getString("Уст");//field[9]
+                        String Slot = rs.getString("Слот");
+                        String Channel = rs.getString("Канал");
+                        String An = rs.getString("УСТ_НИЖН_АВАР");
+                        String Pn = rs.getString("УСТ_НИЖН_ПРЕД");
+                        String Pv = rs.getString("УСТ_ВЕРХ_ПРЕД");
+                        String Av = rs.getString("УСТ_ВЕРХ_АВАР");
+
+                        String[] str = {TypeADC, id, namesig, RangeMax, RangeMin, Unit, sigType, Adres_1, Adres_2, Device, Slot, Channel, An, Pn, Pv, Av};
+                        selectData.add(str);
+                    }
+                    rs.close();
+                    stmt.close();
+                    System.out.println("--Operation SELECT done sucessfully");
+                } catch (SQLException ex) {
+                    Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                }
+                break;
+            case "ao":
+                try {
+                    stmt = connection.createStatement();
+                    ResultSet rs = stmt.executeQuery(" SELECT * FROM " + table + ";");
+                    while (rs.next()) {
+                        String TypeADC = rs.getString("TAG_NAME_PLC");
+                        String id = uuid.getUIID();//генерит рандомный уид который никому не интересен
+                        String namesig = rs.getString("Наименование сигнала");
+                        String RangeMin = rs.getString("Диапазон мин.");
+                        String RangeMax = rs.getString("Диапазон макс.");//field[4]
+                        String Unit = rs.getString("Единица измерения");
+                        String Adres_1 = rs.getString("Адрес_1");
+                        String Adres_2 = rs.getString("Адрес_2");
+                        String Device = rs.getString("Уст");//field[9]
+                        String Slot = rs.getString("Слот");
+                        String Channel = rs.getString("Канал");
+
+                        String[] str = {TypeADC, id, namesig, RangeMax, RangeMin, Unit, Adres_1, Adres_2, Device, Slot, Channel};
+                        selectData.add(str);
+                    }
+                    rs.close();
+                    stmt.close();
+                    System.out.println("--Operation SELECT done sucessfully");
+                } catch (SQLException ex) {
+                    Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                }
+                break;
+            case "dgo":
+                try {
+                    stmt = connection.createStatement();
+                    ResultSet rs = stmt.executeQuery(" SELECT * FROM " + table + ";");
+                    while (rs.next()) {
+                        String TypeADC = rs.getString("TAG_NAME_PLC");
+                        String id = uuid.getUIID();//генерит рандомный уид который никому не интересен
+                        String namesig = rs.getString("Наименование сигнала");
+                        String RangeMin = rs.getString("Диапазон мин.");
+                        String RangeMax = rs.getString("Диапазон макс.");//field[4]
+                        String sigType = rs.getString("Тип сигнала");
+                        String Device = rs.getString("Уст");//field[9]
+                        String Slot = rs.getString("Слот");
+                        String Channel = rs.getString("Канал");
+
+                        String[] str = {TypeADC, id, namesig, RangeMax, sigType, RangeMin, Device, Slot, Channel};
+                        selectData.add(str);
+                    }
+                    rs.close();
+                    stmt.close();
+                    System.out.println("--Operation SELECT done sucessfully");
+                } catch (SQLException ex) {
+                    Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                }
+                break;
+            case "di":
+                try {
+                    stmt = connection.createStatement();
+                    ResultSet rs = stmt.executeQuery(" SELECT * FROM " + table + ";");
+                    while (rs.next()) {
+                        String TypeADC = rs.getString("TAG_NAME_PLC");
+                        String id = uuid.getUIID();//генерит рандомный уид который никому не интересен
+                        String namesig = rs.getString("Наименование сигнала");
+                        String sigType = rs.getString("Тип сигнала");
+                        String Adres_1 = rs.getString("Адрес_1");
+                        String Adres_2 = rs.getString("Адрес_2");
+                        String Device = rs.getString("Уст");//field[9]
+                        String Slot = rs.getString("Слот");
+                        String Channel = rs.getString("Канал");
+
+                        String[] str = {TypeADC, id, namesig, sigType, Adres_1, Adres_2, Device, Slot, Channel};    
+                        selectData.add(str);
+                    }
+                    rs.close();
+                    stmt.close();
+                    System.out.println("--Operation SELECT done sucessfully");
+                } catch (SQLException ex) {
+                    Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                }
+                break;
+
         }
+
         return selectData;
     }
-      ArrayList<String[]> getData(String table, String[] columns) {
+
+    ArrayList<String[]> getData(String table, String[] columns) {
         //connectionToBase(); // вызов Фукция подключения к базе
         StructSelectData.setColumns(columns);
         ArrayList<String[]> selectData = new ArrayList<>();

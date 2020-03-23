@@ -201,13 +201,13 @@ public class XMLSAX {
             Node rootGP = GraphicsCompositeType.getFirstChild(); // Начальная нода файла (что будем импортировать)
 
             // настройка сигналов помещаемых в Графический компонент
-            int Ycord = -710; // Переменная смещения по Y в виде компонентов
+            int Ycord = 0; // Переменная смещения по Y в виде компонентов
             int NumberSign = -1;
 
             int xPos = 2;
-            int yPos = 1;
+            int yPos = 0;
             int sumColumn = 1; // Количество столбцов
-            int offset = 850;
+            int offset = 722;
             String visibleAI = "", disableVisible = "";// Переменная на смещение по иксам в нарисованном элементе
 
             Element DataConnections = GraphicsCompositeType.createElement("DataConnections"); // это для связи переменных с входными сигналами(чуть позже реализовать)
@@ -288,28 +288,44 @@ public class XMLSAX {
                 VarValue6.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
                 FB.appendChild(VarValue6);
 
-                Element VarValue7 = GraphicsCompositeType.createElement("VarValue");
-                VarValue7.setAttribute("Variable", "hint");
-                VarValue7.setAttribute("Value",
-                          field[2] + ","
-                        + field[3] + ","
-                        + field[4] + ","
-                        + field[5] + ","
-                        + field[6] + ","
-                        + field[7] + ","
-                        + field[8] + ","
-                        + field[9] + ","
-                        + field[10] + ","
-                        + field[11] + ","
-                        + field[12] + ","
-                        + field[13] + ","
-                        + field[14] + ","
-                        + field[15] + ","
-                        
-                );
-                VarValue7.setAttribute("Type", "STRING");
-                VarValue7.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
-                FB.appendChild(VarValue7);
+                if (TypeName == "T_BaseAnIn") {
+                    Element VarValue7 = GraphicsCompositeType.createElement("VarValue");
+                    VarValue7.setAttribute("Variable", "hint");
+                    VarValue7.setAttribute("Value", "\u0027" + field[0] + "," + field[2] + "," + field[3] + "," + field[4] + "," + field[5] + "," + field[6] + "," + field[7] + "," + field[8] + ","
+                            + field[9] + "," + field[10] + "," + field[11] + "," + field[12] + "," + field[13] + "," + field[14] + "," + field[15] + "," + "\u0027");
+                    VarValue7.setAttribute("Type", "STRING");
+                    VarValue7.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
+                    FB.appendChild(VarValue7);
+
+                } else if (TypeName == "T_BaseAnOut") {
+                    Element VarValue7 = GraphicsCompositeType.createElement("VarValue");
+                    VarValue7.setAttribute("Variable", "hint");
+                    VarValue7.setAttribute("Value", "\u0027" + field[0] + "," + field[2] + "," + field[3] + "," + field[4] + "," + field[5] + "," + field[6] + "," + field[7] + "," + field[8] + ","
+                            + field[9] + "," + field[10] + "\u0027");
+                    VarValue7.setAttribute("Type", "STRING");
+                    VarValue7.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
+                    FB.appendChild(VarValue7);
+
+                } else if (TypeName == "T_BaseDO") {
+                    Element VarValue7 = GraphicsCompositeType.createElement("VarValue");
+                    VarValue7.setAttribute("Variable", "hint");
+                    VarValue7.setAttribute("Value", "\u0027" + field[0] + "," + field[2] + "," + field[3] + "," + field[4] + "," + field[5] + ","
+                            + field[6] + "," + field[7] + "," + field[8] + "," + "\u0027");
+                    VarValue7.setAttribute("Type", "STRING");
+                    VarValue7.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
+                    FB.appendChild(VarValue7);
+
+                } else if (TypeName == "T_BaseDI") {
+                    Element VarValue7 = GraphicsCompositeType.createElement("VarValue");
+                    VarValue7.setAttribute("Variable", "hint");
+                    VarValue7.setAttribute("Value", "\u0027" + field[0] + "," + field[2] + "," + field[3] + "," + field[4] + "," + field[5] + ","
+                            + field[6] + "," + field[7] + "," + field[8] + "," + "\u0027");
+                    VarValue7.setAttribute("Type", "STRING");
+                    VarValue7.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
+                    FB.appendChild(VarValue7);
+
+                }
+
                 {
                     Element Connection = GraphicsCompositeType.createElement("Connection");
                     Connection.setAttribute("Source", "PrefAb");
@@ -333,7 +349,7 @@ public class XMLSAX {
                 } else {
                     xPos = 2;
                     sumColumn = 2;
-                    yPos = yPos + 26;
+                    yPos = yPos + 24;
                 }
                 if (NumberSign >= 64) {
                     Num = 0;
@@ -342,7 +358,7 @@ public class XMLSAX {
                     Node importNode = document_final.importNode(rootGP, true); // Вытягиваем элемент и импортируем Импорт обязателен
                     n.appendChild(importNode); // Добавляем коренную ноду в Мнемосхему уже после всех преобразований
 
-                    Ycord = -710; // Переменная смещения по Y в виде компонентов
+                    Ycord = 0; // Переменная смещения по Y в виде компонентов
                     xPos = 2;
                     yPos = 0;
                     offset = 750; // Переменная на смещение по иксам в нарисованном элементе

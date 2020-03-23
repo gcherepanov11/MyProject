@@ -459,7 +459,7 @@ public class Main_JPanel extends javax.swing.JFrame {
 
    
 
-    private ComboBoxModel getComboBoxModel() // функция для создания списка из таблиц базы
+    public ComboBoxModel getComboBoxModel() // функция для создания списка из таблиц базы
     {
 
         //String db = "test08_DB";

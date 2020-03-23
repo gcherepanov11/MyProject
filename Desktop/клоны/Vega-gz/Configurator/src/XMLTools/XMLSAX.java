@@ -194,7 +194,7 @@ public class XMLSAX {
         //  так как нода у нас одна то пишем только в 1 по этому for так работает либо пишем в первую.
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);
-            
+
             Document GraphicsCompositeType = createTGraphicsCompositeType(GName); // так забрали документ из метода
             Element FBNetwork = (Element) GraphicsCompositeType.getElementsByTagName("FBNetwork").item(0); // вытягиваем ноду элемента FBNetwork из Документа который получили выше
 
@@ -258,7 +258,7 @@ public class XMLSAX {
                 VarValue3.setAttribute("Type", "String");
                 VarValue3.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");//этот уид в типе TBaseSen
                 FB.appendChild(VarValue3);
-                
+
                 int result = field[0].indexOf("Res");
                 if (result >= 0) {
                     visibleAI = "FALSE";
@@ -287,7 +287,30 @@ public class XMLSAX {
                 VarValue6.setAttribute("Type", "STRING");
                 VarValue6.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
                 FB.appendChild(VarValue6);
-                {                    
+
+                Element VarValue7 = GraphicsCompositeType.createElement("VarValue");
+                VarValue7.setAttribute("Variable", "hint");
+                VarValue7.setAttribute("Value",
+                          field[2] + ","
+                        + field[3] + ","
+                        + field[4] + ","
+                        + field[5] + ","
+                        + field[6] + ","
+                        + field[7] + ","
+                        + field[8] + ","
+                        + field[9] + ","
+                        + field[10] + ","
+                        + field[11] + ","
+                        + field[12] + ","
+                        + field[13] + ","
+                        + field[14] + ","
+                        + field[15] + ","
+                        
+                );
+                VarValue7.setAttribute("Type", "STRING");
+                VarValue7.setAttribute("TypeUUID", "38FDDE3B442D86554C56C884065F87B7");
+                FB.appendChild(VarValue7);
+                {
                     Element Connection = GraphicsCompositeType.createElement("Connection");
                     Connection.setAttribute("Source", "PrefAb");
                     Connection.setAttribute("Destination", "BaseAnPar_Test_" + (Number++) + ".PrefAb");

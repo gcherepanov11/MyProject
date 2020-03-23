@@ -11,6 +11,7 @@ import configurator.*;
 import DataBaseConnect.DataBase;
 import DataBaseConnect.*;
 import ReadWriteExcel.RWExcel;
+import Main.Main_JPanel;
 
 public class Main {
 
@@ -23,6 +24,8 @@ public class Main {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Main_JPanel().setVisible(true);
+                
+                
 
             }
         });

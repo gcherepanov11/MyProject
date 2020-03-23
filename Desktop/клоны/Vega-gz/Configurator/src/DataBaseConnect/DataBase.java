@@ -5,7 +5,6 @@
  */
 package DataBaseConnect;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -48,14 +47,13 @@ public class DataBase {
     }
 
     public void connectionToBase() {
-        
+
         //  String DB_URL = "jdbc:postgresql://172.16.35.25:5432/test08_DB";
         //  String PASS = "test08_DB";
         //  String USER = "test08_DB";
 //        String DB_URL=url;
 //        String PASS=pass;
 //        String USER=user;
-
         final String DB_URL = "jdbc:postgresql://172.16.35.25:5432/test665";//
         final String USER = "postgres";
         final String PASS = "postgres";//
@@ -78,9 +76,9 @@ public class DataBase {
             return;
         }
     }
-    public void connectionToBase(String user,String url,String pass){
-       
-        
+
+    public void connectionToBase(String user, String url, String pass) {
+
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -98,7 +96,7 @@ public class DataBase {
             e.printStackTrace();
             return;
         }
-        
+
     }
 
     void createBase(String name) {
@@ -216,8 +214,8 @@ public class DataBase {
         String nameTbanalise = new String(name_table);
         String sql = "";
         try {
-           // name_table = name_table.replace("-", "_").replace(".", "_").replace(" ", "_");
-            name_table=replacedNt(name_table);
+            // name_table = name_table.replace("-", "_").replace(".", "_").replace(" ", "_");
+            name_table = replacedNt(name_table);
             //--------------- INSERT ROWS ---------------
             switch (name_table) {
                 case "AI1":
@@ -428,10 +426,9 @@ public class DataBase {
         return listColumn;
     }
 
-
 //    }
 //----Строим все сигналы которые сюда ссылаются
-    public ArrayList<String[]> getSelectData(String table) {
+    public ArrayList<String[]> getSelectData(String table) {//в перспективе задавать в параметрах листи через if else указывать,ибо разный набор столбцов мы вытягиваем для ai ao di do
 
         ArrayList<String[]> selectData = new ArrayList<>();
         try {
@@ -441,8 +438,36 @@ public class DataBase {
                 String TypeADC = rs.getString("TAG_NAME_PLC");
                 String id = uuid.getUIID();//генерит рандомный уид который никому не интересен
                 String namesig = rs.getString("Наименование сигнала");
+                String RangeMin = rs.getString("Диапазон мин.");
+                String RangeMax = rs.getString("Диапазон макс.");//field[4]
+                String Unit = rs.getString("Ед.изм.");
+                String sigType = rs.getString("Тип сигнала");
+                String Adres_1 = rs.getString("Адрес_1");
+                String Adres_2 = rs.getString("Адрес_2");
+                String Device = rs.getString("Устройство");//field[9]
+                String Slot = rs.getString("Слот");
+                String Channel = rs.getString("Канал");
+                String An = rs.getString("УСТ_НИЖН_АВАР");
+                String Pn = rs.getString("УСТ_НИЖН_ПРЕД");
+                String Pv = rs.getString("УСТ_ВЕРХ_ПРЕД");
+                String Av = rs.getString("УСТ_ВЕРХ_АВАР");
 
-                String[] str = {TypeADC, id, namesig};
+                String[] str = {TypeADC,
+                    id,
+                    namesig,
+                    RangeMax,
+                    RangeMin,
+                    Unit,
+                    sigType,
+                    Adres_1,
+                    Adres_2,
+                    Device,
+                    Slot,
+                    Channel,
+                    An,
+                    Pn,
+                    Pv,
+                    Av};
                 selectData.add(str);
             }
             rs.close();
@@ -451,6 +476,43 @@ public class DataBase {
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
+        }
+        return selectData;
+    }
+      ArrayList<String[]> getData(String table, String[] columns) {
+        //connectionToBase(); // вызов Фукция подключения к базе
+        StructSelectData.setColumns(columns);
+        ArrayList<String[]> selectData = new ArrayList<>();
+        String s_columns = "";
+        String[] strfromtb = new String[columns.length]; // массив под данные
+        for (int i = 0; i < columns.length; ++i) { //формирование строки запроса
+            if (i < columns.length - 1) {
+                s_columns += "\"" + columns[i] + "\"" + ", ";
+            } // Кавычки для руских имен и пробелов
+            else {
+                s_columns += "\"" + columns[i] + "\"";
+            }
+        }
+        try {
+            stmt = connection.createStatement();
+            System.out.println("SELECT " + s_columns + " FROM " + table + ";");
+            ResultSet rs = stmt.executeQuery("SELECT " + s_columns + " FROM " + table + ";");
+            while (rs.next()) {
+                for (int i = 0; i < columns.length; ++i) {
+                    strfromtb[i] = rs.getString(columns[i]);
+                }
+                String[] tmp1 = Arrays.copyOf(strfromtb, strfromtb.length); // необходимость из за ссылки
+                selectData.add(tmp1);
+                //System.out.println(strfromtb[0]); // это просто для тестов
+            }
+            rs.close();
+            stmt.close();
+            StructSelectData.setcurrentSelectTable(selectData); // Вносим данные в структуру( зачем)
+            //connection.commit();
+            //System.out.println("-- Operation SELECT done successfully");
+        } catch (SQLException e) {
+            System.out.println("Failed select data");
+            e.printStackTrace();
         }
         return selectData;
     }
